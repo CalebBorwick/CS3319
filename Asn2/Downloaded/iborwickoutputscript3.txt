@@ -1,0 +1,226 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SELECT coursename FROM westerncourse
+--------------
+
++---------------------------------------------+
+| coursename                                  |
++---------------------------------------------+
+| Intro to Coding using Pascal and Fortran    |
+| Computer Science Fundamentals I             |
+| Computer Science Fundamentals II            |
+| Modern Survival Skills I: Coding Essentials |
+| Algorithms and Data Structures              |
+| Databases I                                 |
+| AI Categorization Modeling                  |
+| Thesis                                      |
++---------------------------------------------+
+8 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT(coursecode) FROM outsidecourse
+--------------
+
++------------+
+| coursecode |
++------------+
+| CompSci011 |
+| CompSci021 |
+| CompSci022 |
+| CompSci023 |
+| CompSci033 |
+| CompSci101 |
+| CompSci121 |
+| CompSci123 |
+| CompSci212 |
+| CompSci222 |
+| CompSci319 |
+| CompSci333 |
+| CompSci444 |
++------------+
+13 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM westerncourse ORDER BY coursename
+--------------
+
++-----------+---------------------------------------------+--------+--------+
+| coursenum | coursename                                  | weight | suffix |
++-----------+---------------------------------------------+--------+--------+
+| cs4412    | AI Categorization Modeling                  |   0.50 | A/B    |
+| cs2210    | Algorithms and Data Structures              |   1.00 | A/B    |
+| cs1026    | Computer Science Fundamentals I             |   0.50 | A/B    |
+| cs1027    | Computer Science Fundamentals II            |   0.50 | A/B    |
+| cs3319    | Databases I                                 |   0.50 | A/B    |
+| cs0020    | Intro to Coding using Pascal and Fortran    |   1.00 |        |
+| cs2120    | Modern Survival Skills I: Coding Essentials |   0.50 | A/B    |
+| cs4490    | Thesis                                      |   0.50 | Z      |
++-----------+---------------------------------------------+--------+--------+
+8 rows in set (0.00 sec)
+
+--------------
+SELECT coursenum, coursename FROM westerncourse WHERE weight='0.5'
+--------------
+
++-----------+---------------------------------------------+
+| coursenum | coursename                                  |
++-----------+---------------------------------------------+
+| cs1026    | Computer Science Fundamentals I             |
+| cs1027    | Computer Science Fundamentals II            |
+| cs2120    | Modern Survival Skills I: Coding Essentials |
+| cs3319    | Databases I                                 |
+| cs4412    | AI Categorization Modeling                  |
+| cs4490    | Thesis                                      |
++-----------+---------------------------------------------+
+6 rows in set (0.00 sec)
+
+--------------
+SELECT outsidecourse.coursecode, outsidecourse.name FROM outsidecourse INNER JOIN universities ON outsidecourse.uninumber = universities.uninumber WHERE officialname = 'University Of Toronto'
+--------------
+
++------------+---------------------------------------+
+| coursecode | name                                  |
++------------+---------------------------------------+
+| CompSci021 | Packages                              |
+| CompSci022 | Introduction to Programming           |
+| CompSci023 | Advanced Programming                  |
+| CompSci033 | Intro to Programming for Med students |
+| CompSci222 | Introduction to Databases             |
++------------+---------------------------------------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT name FROM outsidecourse WHERE name LIKE '%Introduction%'
+--------------
+
++---------------------------------------+
+| name                                  |
++---------------------------------------+
+| Introduction to Programming           |
+| Introduction to Using Data Structures |
+| Introduction to Databases             |
++---------------------------------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT eqivalent.coursecode, universities.officialname, eqivalent.coursenum, eqivalent.dateapproved FROM eqivalent INNER JOIN universities ON eqivalent.uninumber = universities.uninumber WHERE eqivalent.dateapproved >=(SELECT(DATE_SUB(CURDATE(), INTERVAL 5 YEAR)))
+--------------
+
++------------+--------------------------------+-----------+--------------+
+| coursecode | officialname                   | coursenum | dateapproved |
++------------+--------------------------------+-----------+--------------+
+| CompSci023 | University Of Toronto          | cs1027    | 2017-06-22   |
+| CompSci022 | University Of Toronto          | cs2120    | 2018-12-10   |
+| CompSci022 | University Of Toronto          | cs0020    | 2018-09-19   |
+| CompSci022 | University of British Columbia | cs1027    | 2019-09-01   |
++------------+--------------------------------+-----------+--------------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT eqivalent.coursecode, universities.nickname FROM eqivalent INNER JOIN universities ON eqivalent.uninumber = universities.uninumber WHERE coursenum = 'cs1026'
+--------------
+
++------------+----------+
+| coursecode | nickname |
++------------+----------+
+| CompSci022 | UofT     |
+| CompSci033 | UofT     |
+| CompSci011 | Waterloo |
+| CompSci021 | UBC      |
++------------+----------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT COUNT(coursecode) FROM eqivalent WHERE coursenum = 'cs1026'
+--------------
+
++-------------------+
+| COUNT(coursecode) |
++-------------------+
+|                 4 |
++-------------------+
+1 row in set (0.00 sec)
+
+--------------
+SELECT eqivalent.coursenum, eqivalent.coursecode, universities.nickname FROM eqivalent INNER JOIN universities ON eqivalent.uninumber = universities.uninumber WHERE universities.city = 'Waterloo' AND universities.provincecode='ON'
+--------------
+
++-----------+------------+----------+
+| coursenum | coursecode | nickname |
++-----------+------------+----------+
+| cs1026    | CompSci011 | Waterloo |
+| cs2210    | CompSci101 | Laurier  |
++-----------+------------+----------+
+2 rows in set (0.00 sec)
+
+--------------
+SELECT officialname FROM universities where uninumber NOT IN (SELECT uninumber FROM eqivalent)
+--------------
+
++--------------------------------------------+
+| officialname                               |
++--------------------------------------------+
+| Hogwarts School of WitchCraft and Wizardry |
+| Concordia University                       |
+| McMaster University                        |
+| McGill University                          |
++--------------------------------------------+
+4 rows in set (0.00 sec)
+
+--------------
+SELECT DISTINCT westerncourse.coursename, westerncourse.coursenum FROM westerncourse INNER JOIN eqivalent ON eqivalent.coursenum = westerncourse.coursenum INNER JOIN outsidecourse ON eqivalent.coursecode = outsidecourse.coursecode WHERE outsidecourse.yearofstudy = 3 OR 4
+--------------
+
++---------------------------------------------+-----------+
+| coursename                                  | coursenum |
++---------------------------------------------+-----------+
+| Intro to Coding using Pascal and Fortran    | cs0020    |
+| Computer Science Fundamentals I             | cs1026    |
+| Computer Science Fundamentals II            | cs1027    |
+| Modern Survival Skills I: Coding Essentials | cs2120    |
+| Algorithms and Data Structures              | cs2210    |
+| Databases I                                 | cs3319    |
++---------------------------------------------+-----------+
+6 rows in set (0.01 sec)
+
+--------------
+SELECT westerncourse.coursename FROM westerncourse INNER JOIN eqivalent ON eqivalent.coursenum = westerncourse.coursenum GROUP BY westerncourse.coursename HAVING COUNT(westerncourse.coursename) > 1
+--------------
+
++----------------------------------+
+| coursename                       |
++----------------------------------+
+| Computer Science Fundamentals I  |
+| Computer Science Fundamentals II |
+| Databases I                      |
++----------------------------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT 
+    westerncourse.coursenum AS 'Western Course Number', 
+    westerncourse.coursename AS 'Western Course Name', 
+    westerncourse.weight AS 'Course Weight', 
+    outsidecourse.name AS 'Other University Course Name',
+    universities.officialname AS 'University Name',
+    outsidecourse.weight AS 'Other Course Weight'
+FROM westerncourse
+INNER JOIN eqivalent ON eqivalent.coursenum = westerncourse.coursenum 
+INNER JOIN outsidecourse ON eqivalent.coursecode = outsidecourse.coursecode
+INNER JOIN universities ON universities.uninumber = outsidecourse.uninumber
+WHERE NOT westerncourse.weight = outsidecourse.weight
+--------------
+
++-----------------------+------------------------------------------+---------------+---------------------------------------+--------------------------------+---------------------+
+| Western Course Number | Western Course Name                      | Course Weight | Other University Course Name          | University Name                | Other Course Weight |
++-----------------------+------------------------------------------+---------------+---------------------------------------+--------------------------------+---------------------+
+| cs0020                | Intro to Coding using Pascal and Fortran |          1.00 | Introduction to Programming           | University Of Toronto          |                0.50 |
+| cs0020                | Intro to Coding using Pascal and Fortran |          1.00 | Advanced Programming                  | University of British Columbia |                0.50 |
+| cs0020                | Intro to Coding using Pascal and Fortran |          1.00 | Using Packages                        | Wilfred Laurier University     |                0.50 |
+| cs1026                | Computer Science Fundamentals I          |          0.50 | Intro Programming                     | University of British Columbia |                1.00 |
+| cs2210                | Algorithms and Data Structures           |          1.00 | Introduction to Using Data Structures | Wilfred Laurier University     |                0.50 |
+| cs3319                | Databases I                              |          0.50 | Introduction to Databases             | University Of Toronto          |                1.00 |
++-----------------------+------------------------------------------+---------------+---------------------------------------+--------------------------------+---------------------+
+6 rows in set (0.00 sec)
+
+Bye

@@ -1,0 +1,221 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+CREATE OR REPLACE VIEW otherUniCourseInfo AS SELECT DISTINCT 
+    outsidecourse.coursecode, 
+    universities.officialname, 
+    universities.nickname, 
+    universities.city, 
+    eqivalent.coursenum 
+FROM eqivalent
+INNER JOIN outsidecourse ON eqivalent.coursecode = outsidecourse.coursecode
+INNER JOIN universities ON universities.uninumber = eqivalent.uninumber
+WHERE yearofstudy = 1
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+SELECT * from otherUniCourseInfo
+--------------
+
++------------+--------------------------------+----------+-----------+-----------+
+| coursecode | officialname                   | nickname | city      | coursenum |
++------------+--------------------------------+----------+-----------+-----------+
+| CompSci022 | University Of Toronto          | UofT     | Toronto   | cs1026    |
+| CompSci033 | University Of Toronto          | UofT     | Toronto   | cs1026    |
+| CompSci023 | University Of Toronto          | UofT     | Toronto   | cs1027    |
+| CompSci222 | University Of Toronto          | UofT     | Toronto   | cs3319    |
+| CompSci022 | University Of Toronto          | UofT     | Toronto   | cs2120    |
+| CompSci022 | University Of Toronto          | UofT     | Toronto   | cs0020    |
+| CompSci011 | University of Waterloo         | Waterloo | Waterloo  | cs1026    |
+| CompSci021 | University of British Columbia | UBC      | Vancouver | cs1026    |
+| CompSci022 | University of British Columbia | UBC      | Vancouver | cs1027    |
+| CompSci101 | Wilfred Laurier University     | Laurier  | Waterloo  | cs2210    |
++------------+--------------------------------+----------+-----------+-----------+
+10 rows in set (0.00 sec)
+
+--------------
+SELECT * from otherUniCourseInfo WHERE nickname = 'UofT' ORDER BY coursenum
+--------------
+
++------------+-----------------------+----------+---------+-----------+
+| coursecode | officialname          | nickname | city    | coursenum |
++------------+-----------------------+----------+---------+-----------+
+| CompSci022 | University Of Toronto | UofT     | Toronto | cs0020    |
+| CompSci033 | University Of Toronto | UofT     | Toronto | cs1026    |
+| CompSci022 | University Of Toronto | UofT     | Toronto | cs1026    |
+| CompSci023 | University Of Toronto | UofT     | Toronto | cs1027    |
+| CompSci022 | University Of Toronto | UofT     | Toronto | cs2120    |
+| CompSci222 | University Of Toronto | UofT     | Toronto | cs3319    |
++------------+-----------------------+----------+---------+-----------+
+6 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM universities
+--------------
+
++-----------+--------------------------------------------+-----------+--------------+----------+
+| uninumber | officialname                               | city      | provincecode | nickname |
++-----------+--------------------------------------------+-----------+--------------+----------+
+|         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+|         4 | University of Waterloo                     | Waterloo  | ON           | Waterloo |
+|        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+|        24 | Concordia University                       | Montreal  | QB           | Concord  |
+|        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+|        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+|        77 | Wilfred Laurier University                 | Waterloo  | ON           | Laurier  |
+|        88 | McGill University                          | Montreal  | QB           | McGill   |
++-----------+--------------------------------------------+-----------+--------------+----------+
+8 rows in set (0.00 sec)
+
+--------------
+DELETE FROM universities WHERE nickname LIKE '%cord%'
+--------------
+
+Query OK, 1 row affected (0.06 sec)
+
+--------------
+SELECT * FROM universities
+--------------
+
++-----------+--------------------------------------------+-----------+--------------+----------+
+| uninumber | officialname                               | city      | provincecode | nickname |
++-----------+--------------------------------------------+-----------+--------------+----------+
+|         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+|         4 | University of Waterloo                     | Waterloo  | ON           | Waterloo |
+|        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+|        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+|        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+|        77 | Wilfred Laurier University                 | Waterloo  | ON           | Laurier  |
+|        88 | McGill University                          | Montreal  | QB           | McGill   |
++-----------+--------------------------------------------+-----------+--------------+----------+
+7 rows in set (0.00 sec)
+
+ERROR 1451 (23000) at line 33: Cannot delete or update a parent row: a foreign key constraint fails (`iborwickassign2db`.`eqivalent`, CONSTRAINT `eqivalent_ibfk_3` FOREIGN KEY (`uninumber`) REFERENCES `universities` (`uninumber`))
+--------------
+DELETE FROM universities WHERE provincecode = 'ON'
+--------------
+
+--------------
+SELECT * FROM universities
+--------------
+
++-----------+--------------------------------------------+-----------+--------------+----------+
+| uninumber | officialname                               | city      | provincecode | nickname |
++-----------+--------------------------------------------+-----------+--------------+----------+
+|         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+|         4 | University of Waterloo                     | Waterloo  | ON           | Waterloo |
+|        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+|        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+|        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+|        77 | Wilfred Laurier University                 | Waterloo  | ON           | Laurier  |
+|        88 | McGill University                          | Montreal  | QB           | McGill   |
++-----------+--------------------------------------------+-----------+--------------+----------+
+7 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM outsidecourse INNER JOIN universities ON outsidecourse.uninumber = universities.uninumber
+--------------
+
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+| coursecode | name                                  | yearofstudy | weight | uninumber | uninumber | officialname                               | city      | provincecode | nickname |
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+| CompSci021 | Packages                              |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci022 | Introduction to Programming           |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci023 | Advanced Programming                  |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci033 | Intro to Programming for Med students |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci222 | Introduction to Databases             |           1 |   1.00 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci011 | Intro to Computer Science             |           1 |   0.50 |         4 |         4 | University of Waterloo                     | Waterloo  | ON           | Waterloo |
+| CompSci123 | Using UNIX                            |           2 |   0.50 |         4 |         4 | University of Waterloo                     | Waterloo  | ON           | Waterloo |
+| CompSci121 | Computer Potions                      |           4 |   0.50 |        12 |        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+| CompSci212 | Defense Against Dark Web              |           3 |   1.00 |        12 |        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+| CompSci333 | Graphics                              |           3 |   0.50 |        55 |        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+| CompSci444 | Networks                              |           4 |   0.50 |        55 |        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+| CompSci021 | Intro Programming                     |           1 |   1.00 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+| CompSci022 | Advanced Programming                  |           1 |   0.50 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+| CompSci319 | Using Databases                       |           3 |   0.50 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+| CompSci022 | Using Packages                        |           1 |   0.50 |        77 |        77 | Wilfred Laurier University                 | Waterloo  | ON           | Laurier  |
+| CompSci101 | Introduction to Using Data Structures |           1 |   0.50 |        77 |        77 | Wilfred Laurier University                 | Waterloo  | ON           | Laurier  |
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+16 rows in set (0.00 sec)
+
+--------------
+DELETE outsidecourse FROM outsidecourse INNER JOIN universities ON universities.uninumber = outsidecourse.uninumber WHERE city = 'Waterloo'
+--------------
+
+Query OK, 4 rows affected (0.01 sec)
+
+--------------
+SELECT * FROM outsidecourse INNER JOIN universities ON outsidecourse.uninumber = universities.uninumber
+--------------
+
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+| coursecode | name                                  | yearofstudy | weight | uninumber | uninumber | officialname                               | city      | provincecode | nickname |
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+| CompSci021 | Packages                              |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci022 | Introduction to Programming           |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci023 | Advanced Programming                  |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci033 | Intro to Programming for Med students |           1 |   0.50 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci222 | Introduction to Databases             |           1 |   1.00 |         2 |         2 | University Of Toronto                      | Toronto   | ON           | UofT     |
+| CompSci121 | Computer Potions                      |           4 |   0.50 |        12 |        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+| CompSci212 | Defense Against Dark Web              |           3 |   1.00 |        12 |        12 | Hogwarts School of WitchCraft and Wizardry | Calgary   | AB           | Hogwarts |
+| CompSci333 | Graphics                              |           3 |   0.50 |        55 |        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+| CompSci444 | Networks                              |           4 |   0.50 |        55 |        55 | McMaster University                        | Hamilton  | ON           | Mac      |
+| CompSci021 | Intro Programming                     |           1 |   1.00 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+| CompSci022 | Advanced Programming                  |           1 |   0.50 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
+| CompSci319 | Using Databases                       |           3 |   0.50 |        66 |        66 | University of British Columbia             | Vancouver | BC           | UBC      |
++------------+---------------------------------------+-------------+--------+-----------+-----------+--------------------------------------------+-----------+--------------+----------+
+12 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM outsidecourse
+--------------
+
++------------+---------------------------------------+-------------+--------+-----------+
+| coursecode | name                                  | yearofstudy | weight | uninumber |
++------------+---------------------------------------+-------------+--------+-----------+
+| CompSci021 | Packages                              |           1 |   0.50 |         2 |
+| CompSci021 | Intro Programming                     |           1 |   1.00 |        66 |
+| CompSci022 | Introduction to Programming           |           1 |   0.50 |         2 |
+| CompSci022 | Advanced Programming                  |           1 |   0.50 |        66 |
+| CompSci023 | Advanced Programming                  |           1 |   0.50 |         2 |
+| CompSci033 | Intro to Programming for Med students |           1 |   0.50 |         2 |
+| CompSci121 | Computer Potions                      |           4 |   0.50 |        12 |
+| CompSci212 | Defense Against Dark Web              |           3 |   1.00 |        12 |
+| CompSci222 | Introduction to Databases             |           1 |   1.00 |         2 |
+| CompSci319 | Using Databases                       |           3 |   0.50 |        66 |
+| CompSci333 | Graphics                              |           3 |   0.50 |        55 |
+| CompSci444 | Networks                              |           4 |   0.50 |        55 |
++------------+---------------------------------------+-------------+--------+-----------+
+12 rows in set (0.00 sec)
+
+--------------
+SELECT * FROM eqivalent
+--------------
+
++-----------+------------+-----------+--------------+
+| coursenum | coursecode | uninumber | dateapproved |
++-----------+------------+-----------+--------------+
+| cs1026    | CompSci033 |         2 | 2013-01-02   |
+| cs1026    | CompSci021 |        66 | 2010-01-12   |
+| cs1027    | CompSci023 |         2 | 2017-06-22   |
+| cs3319    | CompSci222 |         2 | 1990-09-13   |
+| cs3319    | CompSci319 |        66 | 1987-09-21   |
++-----------+------------+-----------+--------------+
+5 rows in set (0.00 sec)
+
+--------------
+SELECT * from otherUniCourseInfo
+--------------
+
++------------+--------------------------------+----------+-----------+-----------+
+| coursecode | officialname                   | nickname | city      | coursenum |
++------------+--------------------------------+----------+-----------+-----------+
+| CompSci033 | University Of Toronto          | UofT     | Toronto   | cs1026    |
+| CompSci021 | University of British Columbia | UBC      | Vancouver | cs1026    |
+| CompSci023 | University Of Toronto          | UofT     | Toronto   | cs1027    |
+| CompSci222 | University Of Toronto          | UofT     | Toronto   | cs3319    |
++------------+--------------------------------+----------+-----------+-----------+
+4 rows in set (0.00 sec)
+
+Bye

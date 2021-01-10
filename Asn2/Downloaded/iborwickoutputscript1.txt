@@ -1,0 +1,126 @@
+Warning: Using a password on the command line interface can be insecure.
+--------------
+SHOW databases
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| iborwickassign2db  |
+| mysql              |
+| performance_schema |
+| vetoffice          |
++--------------------+
+5 rows in set (0.00 sec)
+
+--------------
+DROP DATABASE IF EXISTS iborwickassign2db
+--------------
+
+Query OK, 5 rows affected (0.12 sec)
+
+--------------
+CREATE DATABASE iborwickassign2db
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+GRANT USAGE ON *.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+DROP USER 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CREATE USER 'ta'@'localhost' IDENTIFIED BY 'cs3319'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+GRANT ALL PRIVILEGES ON yourwesternuseridassign2db.* TO 'ta'@'localhost'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+FLUSH PRIVILEGES
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
+Empty set (0.00 sec)
+
+--------------
+CREATE TABLE universities(uninumber int NOT NULL,
+                          officialname VARCHAR(50) NOT NULL,
+                          city VARCHAR(20) NOT NULL, 
+                          provincecode VARCHAR(20) NOT NULL,
+                          nickname VARCHAR(20) NOT NULL,
+                          PRIMARY KEY (uninumber))
+--------------
+
+Query OK, 0 rows affected (0.17 sec)
+
+--------------
+CREATE TABLE westerncourse(coursenum VARCHAR(6) NOT NULL, 
+                           coursename VARCHAR(50) NOT NULL, 
+                           weight decimal(3,2) NOT NULL, 
+                           suffix VARCHAR(20), 
+                           PRIMARY KEY (coursenum))
+--------------
+
+Query OK, 0 rows affected (0.06 sec)
+
+--------------
+CREATE TABLE outsidecourse(coursecode VARCHAR(10) NOT NULL, 
+                           name VARCHAR(50) NOT NULL, 
+                           yearofstudy int NOT NULL, 
+                           weight decimal(3,2) NOT NULL, 
+                           uninumber int NOT NULL,
+                           PRIMARY KEY(coursecode, uninumber), 
+                           FOREIGN KEY (uninumber) REFERENCES universities (uninumber))
+--------------
+
+Query OK, 0 rows affected (0.06 sec)
+
+--------------
+CREATE TABLE eqivalent(coursenum VARCHAR(6) NOT NULL,
+                       coursecode VARCHAR(10) NOT NULL, 
+                       uninumber int NOT NULL,
+                       dateapproved date NOT NULL,
+                       FOREIGN KEY (coursenum) REFERENCES westerncourse (coursenum) 
+                       ON DELETE CASCADE,  
+                       FOREIGN KEY (coursecode) REFERENCES outsidecourse (coursecode) 
+                       ON DELETE CASCADE, 
+                       FOREIGN KEY (uninumber) REFERENCES universities (uninumber))
+--------------
+
+Query OK, 0 rows affected (0.07 sec)
+
+--------------
+SHOW TABLES
+--------------
+
++-----------------------------+
+| Tables_in_iborwickassign2db |
++-----------------------------+
+| eqivalent                   |
+| outsidecourse               |
+| universities                |
+| westerncourse               |
++-----------------------------+
+4 rows in set (0.00 sec)
+
+Bye

@@ -1,0 +1,57 @@
+.header {
+    padding: 30px;
+    background: #663399;
+    font-size: 14px;
+    color: white;
+    text-align: right;
+    width: 110%
+    top: 0px;
+}
+
+body {
+    background-color: silver;
+    margin-left: 10px;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-weight: bold;
+    color: white;
+    background: #663399;
+    padding: 5px;
+
+}
+
+
+h3{
+    padding: 5px;
+    
+}
+
+
+p{
+    padding: 10px;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+    background: #D8D8D8;
+}
+
+th {
+    text-decoration: underline;
+}
+
+input{
+    padding: 10px;
+    color: white;
+    background: #663399;
+    margin-left: 25px
+}
+
+select{
+    margin-left: 25px;
+    background: #D8D8D8;
+}
